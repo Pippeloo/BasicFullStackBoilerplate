@@ -1,0 +1,59 @@
+version: "3.9"
+services:
+  web:
+    image: nginx:stable-alpine
+    container_name: web_stack
+    ports:
+      - "1234:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./config/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./logs/nginx:/var/log/nginx
+    restart: always
+    depends_on:
+      - db
+      - php
+    networks:
+      - stack
+  php:
+    image: php:fpm-alpine
+    container_name: php_stack
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - stack
+  db:
+    image: mysql:latest
+    container_name: db_stack
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: always
+    networks:
+      - stack
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: info
+      MYSQL_USER: platform
+      MYSQL_PASSWORD: secret
+  phpmyadmin:
+    image: phpmyadmin:fpm-alpine
+    container_name: phpmyadmin_stack
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - stack
+    environment:
+      PMA_HOST: db_stack
+      PMA_PORT: 3306
+      PMA_USER: platform
+      PMA_PASSWORD: secret
+      PMA_ARBITRARY: 1
+networks:
+  stack:
+    driver: bridge
