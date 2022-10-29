@@ -3,10 +3,15 @@
 function runQuery($query) {
     $connection = connect();
 
-    $result = mysqli_query($connection, $query);
+    $result = $connection->query($query);
 
-    if (!$result) {
-        die('Query failed: ' . mysqli_error($connection));
+    // Check if the query returned a result
+    if ($result) {
+        // If the query returned a result, return the result
+        return $result;
+    } else {
+        // If the query did not return a result, display an error message
+        echo 'No data found';
     }
 
     return $result;

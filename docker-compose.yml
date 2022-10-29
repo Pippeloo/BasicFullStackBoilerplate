@@ -16,7 +16,7 @@ services:
     networks:
       - stack
   php:
-    image: php:fpm-alpine
+    build: .
     container_name: php_stack
     volumes:
       - ./src:/var/www/html
@@ -30,30 +30,29 @@ services:
     container_name: db_stack
     volumes:
       - ./db:/var/lib/mysql
+      - ./config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
     networks:
       - stack
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: info
+      MYSQL_DATABASE: data
       MYSQL_USER: platform
       MYSQL_PASSWORD: secret
   phpmyadmin:
-    image: phpmyadmin:fpm-alpine
+    image: phpmyadmin:apache
     container_name: phpmyadmin_stack
     restart: always
     ports:
       - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: platform
+      PMA_PASSWORD: secret
     depends_on:
       - db
     networks:
       - stack
-    environment:
-      PMA_HOST: db_stack
-      PMA_PORT: 3306
-      PMA_USER: platform
-      PMA_PASSWORD: secret
-      PMA_ARBITRARY: 1
 networks:
   stack:
     driver: bridge

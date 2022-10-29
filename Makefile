@@ -22,9 +22,9 @@ restart:
 build:
 	docker-compose build
 
-# Backup all the database with a timestamp
+# Backup the database with a timestamp
 backup:
-	docker exec db_stack /usr/bin/mysqldump --databases local -uroot --password=root > ./backup/databases-$(shell date +%Y%m%d-%H%M%S).sql
+	docker exec db_stack /usr/bin/mysqldump -uroot --password=root -f data > ./backups/data-$(shell date +%Y%m%d-%H%M%S).sql
 
 # Enter the web container
 web:

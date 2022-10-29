@@ -1,15 +1,15 @@
 <?php
 
 function connect() {
-    $host = 'localhost';
+    $host = 'db_stack';
     $user = 'platform';
     $password = 'secret';
-    $database = 'info';
+    $database = 'data';
 
-    $connection = mysqli_connect($host, $user, $password, $database);
+    $connection = new mysqli($host, $user, $password, $database);
 
-    if (!$connection) {
-        die('Connection failed: ' . mysqli_connect_error());
+    if ($connection->connect_error) {
+        die('Connection failed: ' . $connection->connect_error);
     }
 
     return $connection;
