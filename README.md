@@ -2,6 +2,8 @@
 
 A basic full stack boilerplate for a quick startup!
 
+Please leave a star if you like it! :blush:
+
 ## Requirements
 
 - `make`
